@@ -1,16 +1,21 @@
 # dyfi-ddns-updater
 
-Client for updating the IP to your free hostname at https://dy.fi. Your network's IP is checked for changes every 2 minutes, or if it hasn't changed,
-still do a request to dyfi after 6 days +-60 random minutes, so that your hostname doesn't get released.
+Client for updating the IP to your free hostname at https://dy.fi.
+The script checks for IP changes every 2 minutes, or if it hasn't changed in 6 days,
+still do a request to dyfi after 6 days so that your hostname doesn't get released.
 
-Requires the `requests` pip package, and is only made to work on linux.
+## Setup
+### Install dependencies
+Run `pip install --requirement requirements.txt` 
 
+### Test setup
 - `chmod +x dyfi_ddns_updater.py`
-- Run `./dyfi_ddns_updater.py --help` for more information
+- `./dyfi_ddns_updater.py --help` for more information
 - Example `dyfi_ddns_updater.py -u="user@example.com" -p="password" -n="example.dy.fi"`
 
-## Run on system startup and in the background
-It is easiest and reliable to create a systemctl service for the script.
+## Running on system startup in the background
+It is easiest and most reliable to create a systemctl service for the script.
+
 Create `/lib/systemd/system/dyfi.service`
 
 ```bash
