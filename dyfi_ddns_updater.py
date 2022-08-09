@@ -4,12 +4,13 @@ import time
 from subprocess import run
 import argparse
 import requests
+import base64
 
 parser = argparse.ArgumentParser(
-    description="A program that updates the IP for a Dynamic DNS service.\
+    description='A program that updates the IP for a Dynamic DNS service.\
      The IP address of the machine running this script will be retrieved and used.\
      The IP is checked every 10 minutes. Example: \
-         'dyfi_ddns_updater.py -u=\"user@example.com\" -p=\"password\" -n=\"example.dy.fi\"'"
+         \'dyfi_ddns_updater.py -u="user@example.com" -p="password" -n="example.dy.fi"\''
 )
 parser.add_argument(
     "-u", "--username", type=str, help="Your account's username to the DDNS service"
@@ -36,15 +37,19 @@ args = parser.parse_args()
 username = args.username
 password = args.password
 hostname = args.hostname
+authstring = f"{username}:{password}"
 # Dy.fi documentation deletes the IP if not updated in 7 days.
 # 6 days in seconds
 UPDATE_INTERVAL = 518400
 CHECKIP_URL = "https://icanhazip.com"
 dyndns_url = f"{args.ddns}{hostname}"
+AUTH = str(base64.b64encode(bytes(authstring, "utf-8")))[2:-1]
 stored_ip = ""
+
 
 def log(msg):
     run(f"echo '[{time.asctime()}]{str(msg)}' >> /var/log/dyfi.log", shell=True)
+
 
 def fetch_content():
     resp = None
@@ -59,13 +64,14 @@ def fetch_content():
         return False
     return resp.text
 
+
 def get_ip():
     fail_count = 0
     result = fetch_content()
     while True:
         if result:
             if fail_count > 0:
-                log(f"[get_ip]: Got IP after {fail_count} tries")
+                log(f"[get_ip]: Got IP after {fail_count+1} tries")
             return result
         fail_count += 1
         time.sleep(600)
@@ -74,7 +80,8 @@ def get_ip():
 
 def dns_update():
     # GET request to the ddns by running curl in a shell.
-    run(f"curl -D - --user '{username}:{password}' '{dyndns_url}'", shell=True)
+    #run(f"curl -D - --user '{username}:{password}' '{dyndns_url}'", shell=True)
+    requests.get(dyndns_url, headers={"Authorization": f"Basic {AUTH}"})
     # Logs each IP update to a file
     log(f"Updated IP: {stored_ip}")
     # run(f"echo '{username}:{password}' '{dyndns_url}'", shell=True)
