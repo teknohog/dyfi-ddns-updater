@@ -1,6 +1,7 @@
 # dyfi-ddns-updater
 
 Client for updating the IP to your free hostname at https://dy.fi.
+
 The script checks for IP changes every 2 minutes, or if it hasn't changed in 6 days,
 still do a request to dyfi after 6 days so that your hostname doesn't get released.
 
