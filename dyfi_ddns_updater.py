@@ -59,7 +59,7 @@ def fetch_content():
     resp = None
     try:
         resp = requests.get(CHECKIP_URL)
-        if options.verbose:
+        if args.verbose:
             print("current ip =", resp.text)
     except requests.ConnectionError as e:
         log(f"[get_ip]: NewConnectionError. error: {e}")
