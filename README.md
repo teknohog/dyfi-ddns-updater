@@ -14,6 +14,11 @@ Run `pip install --requirement requirements.txt`
 - `./dyfi_ddns_updater.py --help` for more information
 - Example `dyfi_ddns_updater.py -u="user@example.com" -p="password" -n="example.dy.fi"`
 
+### Multiple hostnames
+Besides a single hostname, the -n/--hostname option accepts a
+comma-separated list of names. Example:
+`dyfi_ddns_updater.py -u="user@example.com" -p="password" -n="host1.dy.fi,host2dy.fi"`
+
 ## Running on system startup in the background
 It is easiest and most reliable to create a systemctl service for the script.
 
