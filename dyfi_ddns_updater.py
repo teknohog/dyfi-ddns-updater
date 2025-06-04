@@ -1,7 +1,6 @@
 #!/usr/bin/python3
 import random
 import time
-from subprocess import run
 import argparse
 import requests
 import base64
@@ -32,6 +31,9 @@ parser.add_argument(
     help="URL to the DDNS, including path to the update \
     resource and possible hostname query params",
 )
+parser.add_argument(
+    "-l", "--logfile", type=str, default="/var/log/dyfi.log", help="Log file path, default %(default)s"
+)
 args = parser.parse_args()
 
 username = args.username
@@ -46,10 +48,10 @@ dyndns_url = f"{args.ddns}{hostname}"
 AUTH = str(base64.b64encode(bytes(authstring, "utf-8")))[2:-1]
 stored_ip = ""
 
-
 def log(msg):
-    run(f"echo '[{time.asctime()}]{str(msg)}' >> /var/log/dyfi.log", shell=True)
-
+    lf = open(args.logfile, "a")
+    lf.write(f'[{time.asctime()}] {str(msg)}\n')
+    lf.close()
 
 def fetch_content():
     resp = None
