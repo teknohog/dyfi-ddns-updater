@@ -34,6 +34,8 @@ parser.add_argument(
 parser.add_argument(
     "-l", "--logfile", type=str, default="/var/log/dyfi.log", help="Log file path, default %(default)s"
 )
+parser.add_argument("-v", "--verbose", action = "store_true")
+
 args = parser.parse_args()
 
 username = args.username
@@ -57,7 +59,8 @@ def fetch_content():
     resp = None
     try:
         resp = requests.get(CHECKIP_URL)
-        print("current ip is=", resp.text)
+        if options.verbose:
+            print("current ip =", resp.text)
     except requests.ConnectionError as e:
         log(f"[get_ip]: NewConnectionError. error: {e}")
         return False
